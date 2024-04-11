@@ -877,7 +877,6 @@ end
 -- strings, rows is an array of arrays of strings.
 function Table(caption, aligns, widths, headers, rows)
   local buffer = {}
-  local width_total = 0
   local max_cols = 0
   local function add(s)
     table.insert(buffer, s)
@@ -893,12 +892,8 @@ function Table(caption, aligns, widths, headers, rows)
   end
   add('\t<tgroup class="- topic/tgroup " cols="' .. max_cols .. '">')
   if widths and widths[1] ~= 0 then
-    
     for _, w in pairs(widths) do
-      width_total = width_total + w
-    end
-    for _, w in pairs(widths) do
-      add('\t\t<colspec class="- topic/colspec " colname="c' .. _ .. '" colnum="' .. _ .. '" colwidth="' .. string.format("%d%%", math.floor((w / width_total) * 100)) .. '"/>')
+      add('\t\t<colspec class="- topic/colspec " colname="c' .. _ .. '" colnum="' .. _ .. '" colwidth="' .. string.format("%d", math.floor(w * 100)) .. '*"/>')
     end
   else
     for _, w in pairs(widths) do
