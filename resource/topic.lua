@@ -587,18 +587,25 @@ function Link(s, src, tit)
 end
 
 
--- Image is an inline element that translates to <image>
-function Image(s, src, tit)
- 
-  if tit == nil then
-    return '<image class="- topic/image " href="' .. escape(src,true) .. '"/>'
-  else
-    return '<image class="- topic/image " scalefit="yes" href="' .. escape(src,true) .. '">' ..
-      '<alt class="- topic/alt ">' .. tit .. '</alt>' ..
-      '</image>'
-  end
+-- Image is an block level element that translates to <fig> with <title> abd <image> sub elements
+function Image(caption, src, title, attr)
+  pushElementToCurrentTopic('<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. title .. '</title>\n' ..
+      '\t<image class="- topic/image " scalefit="yes" href="' .. escape(src,true) .. '">\n' ..
+      '\t\t<alt class="- topic/alt ">' .. caption .. '</alt>\n\t</image>\n</fig>')
+  return ""
 end
 
+-- CaptionedImage is an block level element that translates to <fig> with <title> abd <image> sub elements
+function CaptionedImage(src, title, caption, attr)
+  pushElementToCurrentTopic('<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. title .. '</title>\n' ..
+      '\t<image class="- topic/image " scalefit="yes" href="' .. escape(src,true) .. '">\n' ..
+      '\t\t<alt class="- topic/alt ">' .. caption .. '</alt>\n\t</image>\n</fig>')
+  return ""
+end
+
+function Figure(caption, src, title)
+  return ""
+end
 
 -- Code is an inline element that translates to <codeph>
 function Code(s, attr)
@@ -858,15 +865,6 @@ function DefinitionList(items)
     end
   end
   pushElementToCurrentTopic("<dl class='- topic/dl '>" .. table.concat(buffer, "\n") .. "\n</dl>")
-  return ""
-end
-
-
--- CaptionedImage is an block level element that translates to <fig> with <title> abd <image> sub elements
-function CaptionedImage(src, tit, caption)
-  pushElementToCurrentTopic('<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. caption .. '</title>\n' ..
-      '\t<image class="- topic/image " scalefit="yes" href="' .. escape(src,true) .. '">\n' ..
-      '\t\t<alt class="- topic/alt ">' .. tit .. '</alt>\n\t</image>\n</fig>')
   return ""
 end
 
