@@ -761,9 +761,12 @@ function Header(lev, s, attr)
 end
 
 
--- Blockquote is an inline element that translates to <q>
-function BlockQuote(s)
-  return "<q class='- topic/q '>\n" .. s .. "\n</q>"
+-- Blockquote is an inline element that translates to <lq>
+function BlockQuote(content)
+  quote = "<lq class='- topic/lq '>\n" .. getLastTopicElement() .. "\n</lq>"
+  popElementFromCurrentTopic()
+  pushElementToCurrentTopic(quote)
+  return ""
 end
 
 function Underline(s)
@@ -964,8 +967,7 @@ function Div(s, attr)
     pushElementToCurrentTopic(div_note)
   end
 
-  --  pushElementToCurrentTopic("<div class='- topic/div '" .. attributes(attr) .. ">\n" .. s .. "</div>")
-  return "" -- "<div class='- topic/div '" .. attributes(attr) .. ">\n" .. s .. "</div>"
+  return "" 
 end
 
 
