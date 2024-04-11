@@ -975,7 +975,7 @@ end
 local meta = {}
 meta.__index =
   function(_, key)
-    io.stderr:write(string.format("WARNING: Undefined function '%s'\n",key))
+    print(string.format("WARNING: Undefined function '%s'\n",key))
     return function() return "" end
   end
 setmetatable(_G, meta)
