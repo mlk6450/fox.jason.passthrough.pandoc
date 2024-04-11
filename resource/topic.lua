@@ -807,17 +807,17 @@ function BulletList(items)
   local buffer = {}
   local reverse = false
   for _, item in pairs(items) do
-    if item ~= "" then
+    if not string.find(item, "^%s*$") then
       -- This is a plain text list item
       table.insert(buffer, '\t<li class="- topic/li ">' .. item .. "</li>\n")
     else
       -- If the item is empty this is a paragraph within the <li>
       -- remove the <p> previously processed from the topic and add it to the list items
-       table.insert(buffer, '\t<li class="- topic/li ">' .. getLastTopicElement()  .. "</li>\n")
-       popElementFromCurrentTopic()
+      table.insert(buffer, '\t<li class="- topic/li ">' .. getLastTopicElement()  .. "</li>\n")
+      popElementFromCurrentTopic()
       -- To maintainorder we'll need to reverse the order
       -- Hopefully all the items in the list can be processed the same way
-       reverse = true
+      reverse = true
     end
   end
 
@@ -837,15 +837,17 @@ function OrderedList(items)
   local buffer = {}
   local reverse = false
   for _, item in pairs(items) do
-    if item ~= "" then
-       -- This is a plain text list item
+    if not string.find(item, "^%s*$") then
+      -- This is a plain text list item
       table.insert(buffer, '\t<li class="- topic/li ">' .. item .. "</li>\n")
     else
-       -- If the item is empty this is a paragraph within the <li>
-       -- remove the <p> previously processed from the topic and add it to the list items
-       table.insert(buffer, '\t<li class="- topic/li ">' .. getLastTopicElement() .. "</li>\n")
-       popElementFromCurrentTopic()
-       reverse = true
+      -- If the item is empty this is a paragraph within the <li>
+      -- remove the <p> previously processed from the topic and add it to the list items
+      table.insert(buffer, '\t<li class="- topic/li ">' .. getLastTopicElement() .. "</li>\n")
+      popElementFromCurrentTopic()
+      -- To maintainorder we'll need to reverse the order
+      -- Hopefully all the items in the list can be processed the same way
+      reverse = true
     end
   end
 
