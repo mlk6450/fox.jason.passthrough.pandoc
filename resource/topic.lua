@@ -971,7 +971,7 @@ function Table(caption, aligns, widths, headers, rows)
       c = c:gsub("&#13;", "\n")
       c = c:gsub("&#xD;", "\n")
       if (string.match(c,'\n')) then
-        addLines = true
+        addLines = false -- This used to be true but it works better for us if this is false
       end
     end
     for i,c in pairs(row) do
