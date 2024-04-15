@@ -592,16 +592,38 @@ end
 
 -- Image is an block level element that translates to <fig> with <title> abd <image> sub elements
 function Image(caption, src, title, attr)
+  local size_str = ' '
+  if attr.height ~= nil then
+    size_str = size_str .. 'height= "' .. attr.height .. '"'
+  end
+  if attr.width ~= nil then
+    size_str = size_str .. 'width= "' .. attr.width .. '"'
+  end
+  if attr.scale ~= nil then
+    size_str = size_str .. 'scale= "' .. attr.scale .. '"'
+  end
+
   pushElementToCurrentTopic('<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. title .. '</title>\n' ..
-      '\t<image class="- topic/image " scalefit="yes" href="' .. escape(src,true) .. '">\n' ..
+      '\t<image class="- topic/image " scalefit="yes"' .. size_str .. ' href="' .. escape(src,true) .. '">\n' ..
       '\t\t<alt class="- topic/alt ">' .. caption .. '</alt>\n\t</image>\n</fig>')
   return ""
 end
 
 -- CaptionedImage is an block level element that translates to <fig> with <title> abd <image> sub elements
 function CaptionedImage(src, title, caption, attr)
+  local size_str = ' '
+  if attr.height ~= nil then
+    size_str = size_str .. 'height= "' .. attr.height .. '"'
+  end
+  if attr.width ~= nil then
+    size_str = size_str .. 'width= "' .. attr.width .. '"'
+  end
+  if attr.scale ~= nil then
+    size_str = size_str .. 'scale= "' .. attr.scale .. '"'
+  end
+
   pushElementToCurrentTopic('<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. title .. '</title>\n' ..
-      '\t<image class="- topic/image " scalefit="yes" href="' .. escape(src,true) .. '">\n' ..
+      '\t<image class="- topic/image " scalefit="yes"' .. size_str .. ' href="' .. escape(src,true) .. '">\n' ..
       '\t\t<alt class="- topic/alt ">' .. caption .. '</alt>\n\t</image>\n</fig>')
   return ""
 end
