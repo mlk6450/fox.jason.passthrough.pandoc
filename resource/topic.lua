@@ -82,10 +82,13 @@ local function pushElementToCurrentTopic (s)
   end
 end
 
+local function getTopicElement (index)
+  return topics[#topics].elem[index]
+end
 
 -- Returns the latest block element added to the current topic
-local function getLastTopicElement()
-  return topics[#topics].elem[#topics[#topics].elem]
+local function getLastTopicElement ()
+  return getTopicElement(#topics[#topics].elem)
 end
 
 
@@ -805,28 +808,36 @@ end
 -- BulletList is an block level element that translates to <ul> with <li> sub elements
 function BulletList(items)
   local buffer = {}
-  local reverse = false
-  for _, item in pairs(items) do
-    if not string.find(item, "^%s*$") then
-      -- This is a plain text list item
-      table.insert(buffer, '\t<li class="- topic/li ">' .. item .. "</li>\n")
-    else
-      -- If the item is empty this is a paragraph within the <li>
-      -- remove the <p> previously processed from the topic and add it to the list items
-      table.insert(buffer, '\t<li class="- topic/li ">' .. getLastTopicElement()  .. "</li>\n")
-      popElementFromCurrentTopic()
-      -- To maintainorder we'll need to reverse the order
-      -- Hopefully all the items in the list can be processed the same way
-      reverse = true
+  local is_block = {}
+  local blocks = 0
+  local tmp = 0
+
+  -- identify which bullets in the items list contain block elements
+  for i, item in pairs(items) do
+    if string.find(item, "^%s*$") or string.find(item, "^%S*%s+$") then
+      is_block[i] = true
+      blocks = blocks + 1
     end
   end
 
-  -- If we've been picking from the end we'll need to reverse the order.
-  if reverse == true then
-    reverseArray(buffer)
+  tmp = blocks - 1
+  for i, item in pairs(items) do
+    if is_block[i] == nil then
+      -- This is a plain text list item
+      table.insert(buffer, '\t<li class="- topic/li ">' .. item .. "</li>\n")
+    else
+      -- This is a block list item
+      table.insert(buffer, '\t<li class="- topic/li ">' .. item .. getTopicElement(#topics[#topics].elem - tmp)  .. "</li>\n")
+      tmp = tmp - 1
+    end
   end
 
+  -- remove all of the accounted for block elements from the topic
+  for i = blocks, 1, -1 do
+    popElementFromCurrentTopic()
+  end
 
+  -- push the list element to the current topic
   pushElementToCurrentTopic ('<ul class="- topic/ul ">\n' .. table.concat(buffer, "") .. "</ul>")
   return ""
 end
@@ -835,24 +846,33 @@ end
 -- OrderedList is an block level element that translates to <ol> with <li> sub elements
 function OrderedList(items)
   local buffer = {}
-  local reverse = false
-  for _, item in pairs(items) do
-    if not string.find(item, "^%s*$") then
-      -- This is a plain text list item
-      table.insert(buffer, '\t<li class="- topic/li ">' .. item .. "</li>\n")
-    else
-      -- If the item is empty this is a paragraph within the <li>
-      -- remove the <p> previously processed from the topic and add it to the list items
-      table.insert(buffer, '\t<li class="- topic/li ">' .. getLastTopicElement() .. "</li>\n")
-      popElementFromCurrentTopic()
-      -- To maintainorder we'll need to reverse the order
-      -- Hopefully all the items in the list can be processed the same way
-      reverse = true
+  local is_block = {}
+  local blocks = 0
+  local tmp = 0
+
+  -- identify which bullets in the items list contain block elements
+  for i, item in pairs(items) do
+    if string.find(item, "^%s*$") or string.find(item, "^%S*%s+$") then
+      is_block[i] = true
+      blocks = blocks + 1
     end
   end
 
-  if reverse == true then
-    reverseArray(buffer)
+  tmp = blocks - 1
+  for i, item in pairs(items) do
+    if is_block[i] == nil then
+      -- This is a plain text list item
+      table.insert(buffer, '\t<li class="- topic/li ">' .. item .. "</li>\n")
+    else
+      -- This is a block list item
+      table.insert(buffer, '\t<li class="- topic/li ">' .. item .. getTopicElement(#topics[#topics].elem - tmp)  .. "</li>\n")
+      tmp = tmp - 1
+    end
+  end
+
+  -- remove all of the accounted for block elements from the topic
+  for i = blocks, 1, -1 do
+    popElementFromCurrentTopic()
   end
 
   pushElementToCurrentTopic('<ol class="- topic/ol ">\n' .. table.concat(buffer, "") .. "</ol>")
