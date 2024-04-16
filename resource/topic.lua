@@ -570,23 +570,8 @@ end
 
 -- Link is an inline element that translates to <xref>
 -- We need to differenciate between internal and external links
-function Link(s, src, tit)
-   src = string.gsub(src, '_', '-')
-   src = string.gsub(src, '%%20', ' ')
-   src =  string.lower(src)
-  if string.starts(src,'#') then
-    return '<xref class="- topic/xref " href="' .. escape(src,true) .. '" format="dita">' .. s .. '</xref>'
-  else
-    if string.match(src,' ') then
-      index = string.find(src, "[^ ]*$")
-      src = string.sub(src, index)
-    end
-    if src == "" then
-      return s
-    else
-      return '<xref class="- topic/xref " href="' .. escape(src,true) .. '" format="html" scope="external">' .. s .. '</xref>'
-    end
-  end
+function Link(content, target, title, attr)
+  return '<xref class="- topic/xref " href="' .. escape(target,true) .. '" format="dita">' .. content .. '</xref>'
 end
 
 
