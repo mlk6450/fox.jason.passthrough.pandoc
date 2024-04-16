@@ -591,7 +591,8 @@ end
 
 
 -- Image is an block level element that translates to <fig> with <title> abd <image> sub elements
-function Image(caption, src, title, attr)
+--   ![alt](src "title")  or  ![alt](src)
+function Image(title, src, alt, attr)
   local size_str = ' '
   if attr.height ~= nil then
     size_str = size_str .. 'height= "' .. attr.height .. '"'
@@ -603,14 +604,14 @@ function Image(caption, src, title, attr)
     size_str = size_str .. 'scale= "' .. attr.scale .. '"'
   end
 
-  pushElementToCurrentTopic('<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. title .. '</title>\n' ..
-      '\t<image class="- topic/image " scalefit="yes"' .. size_str .. ' href="' .. escape(src,true) .. '">\n' ..
-      '\t\t<alt class="- topic/alt ">' .. caption .. '</alt>\n\t</image>\n</fig>')
+  pushElementToCurrentTopic('<image class="- topic/image " href="' .. escape(src) .. '"' .. size_str .. ' scalefit="yes">\n\t<alt class="- topic/alt ">' .. alt .. '</alt>\n</image>') 
   return ""
 end
 
 -- CaptionedImage is an block level element that translates to <fig> with <title> abd <image> sub elements
-function CaptionedImage(src, title, caption, attr)
+--   ![](src "title")  or  ![](src)
+function CaptionedImage(src, alt, _, attr)
+  local title = ""
   local size_str = ' '
   if attr.height ~= nil then
     size_str = size_str .. 'height= "' .. attr.height .. '"'
@@ -624,11 +625,14 @@ function CaptionedImage(src, title, caption, attr)
 
   pushElementToCurrentTopic('<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. title .. '</title>\n' ..
       '\t<image class="- topic/image " scalefit="yes"' .. size_str .. ' href="' .. escape(src,true) .. '">\n' ..
-      '\t\t<alt class="- topic/alt ">' .. caption .. '</alt>\n\t</image>\n</fig>')
+      '\t\t<alt class="- topic/alt ">' .. alt .. '</alt>\n\t</image>\n</fig>')
   return ""
 end
 
-function Figure(caption, src, title)
+function Figure(title, _, attr)
+  local figure = '<fig class="- topic/fig ">\n\t<title class="- topic/title ">' .. title .. '</title>\n\t' .. getLastTopicElement() .. '\n</fig>'
+  popElementFromCurrentTopic()
+  pushElementToCurrentTopic(figure)
   return ""
 end
 
